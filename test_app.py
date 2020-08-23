@@ -53,3 +53,33 @@ def test_validate_guess(capfd):
     assert game._validate_guess(2)
     out, _ = capfd.readouterr()
     assert out == '2 is correct!\n'
+
+
+@patch("builtins.input", side_effect=[4, 22, 9, 4, 6])
+def test_game_win(input, capfd):
+    game = Game()
+    game._answer = 6
+
+    game()
+
+    # it ran the game with every input item and afterwards checked if win had been set to true
+    assert game._win is True
+
+    out = capfd.readouterr()[0]
+    expected = ['4 is too low', 'Number not in range', '9 is too high',
+                'Already guessed', '6 is correct!', 'It took you 3 guesses']
+   # remove any new lines or blank outputs
+    output = [line.strip() for line in out.split('\n') if line.strip()]
+
+# zip will allow code to iterate through both lists at once so can compare both first items, second items etc with each other
+    for line, expected_output in zip(output, expected):
+        assert line == expected_output
+
+
+@patch("builtins.input", side_effect=[None, 2, 3, 4, 5, 6, 7])
+def test_game_lose(input, capfd):
+    game = Game()
+    game._answer = 12
+
+    game()
+    assert game._win is False
