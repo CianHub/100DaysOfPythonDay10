@@ -1,3 +1,3 @@
 # 100 Days of Python: Day 10
 
-Exploring pytest
+Exploring unit tests with pytest
